@@ -1,14 +1,37 @@
+version: '3.8'
+
 services:
-  api:
-    image: text2sql-mcp-server:1.0
+  app:
+    build: .
     ports:
-      - "8080:8080"
+      - "5000:5000"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:mysql://127.0.0.1:3306/mysql?characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
-      SPRING_DATASOURCE_USERNAME: "root"
-      SPRING_DATASOURCE_PASSWORD: "password"
-    volumes:
-      - ./logs:/app/logs
-    build:
-      context: .
-      dockerfile: Dockerfile
+      # Set your Oracle connection details here or in a .env file
+      ORACLE_USER: ${ORACLE_USER:-your_oracle_user}
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-your_oracle_password}
+      ORACLE_HOST: ${ORACLE_HOST:-host.docker.internal} # Use host.docker.internal to connect to host's localhost
+      ORACLE_PORT: ${ORACLE_PORT:-1521}
+      ORACLE_SERVICE_NAME: ${ORACLE_SERVICE_NAME:-your_oracle_service_name}
+    # If you have an Oracle database running as a container, you can link it here
+    # depends_on:
+    #   - oracle_db # Uncomment if you define an oracle_db service below
+    # networks:
+    #   - app_network # Uncomment if you define a network below
+
+  # Example Oracle Database service (uncomment and configure if you want to run Oracle in Docker)
+  # oracle_db:
+  #   image: container-registry.oracle.com/database/express:latest # Or your specific Oracle image
+  #   ports:
+  #     - "1521:1521"
+  #     - "5500:5500"
+  #   environment:
+  #     ORACLE_PWD: your_strong_oracle_password
+  #     ORACLE_USER: your_oracle_user
+  #     ORACLE_DATABASE: your_oracle_service_name
+  #   volumes:
+  #     - oracle_data:/opt/oracle/oradata
+  # networks:
+  #   app_network:
+
+# volumes:
+#   oracle_data:
